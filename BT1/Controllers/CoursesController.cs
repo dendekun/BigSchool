@@ -1,4 +1,7 @@
-﻿using System;
+﻿using BT1.Models;
+using BT1.ViewModel;
+using Microsoft.AspNet.Identity;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -8,10 +11,35 @@ namespace BT1.Controllers
 {
     public class CoursesController : Controller
     {
-        // GET: Courses
-        public ActionResult Create()    
+        private readonly ApplicationDbContext _dbContext;
+        public CoursesController()
         {
-            return View();
+            _dbContext = new ApplicationDbContext();
+        }
+        // GET: Courses
+        [Authorize]
+        public ActionResult Create()
+        {
+            var viewModel = new CourseViewModel
+            {
+                Categories = _dbContext.categories.ToList()
+            };
+            return View(viewModel);
+        }
+        [Authorize]
+        [HttpPost]
+        public ActionResult Create(CourseViewModel viewModel)
+        {
+            var course = new Course
+            {
+                LecturerId = User.Identity.GetUserId(),
+                DateTime = viewModel.GetDateTime(),
+                CategoryId = viewModel.Category,
+                Place = viewModel.Place
+            };
+            _dbContext.Courses.Add(course);
+            _dbContext.SaveChanges();
+            return RedirectToAction("Index", "Home");
         }
     }
 }
