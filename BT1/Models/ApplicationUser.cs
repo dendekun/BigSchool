@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Data.Entity;
 using System.Security.Claims;
@@ -14,12 +15,19 @@ namespace BT1.Models
         [Required]
         [StringLength(255)]
         public string Name { get; set; }
+        public ICollection<Following> Followers { get; set; }
+        public ICollection<Following> Followees{ get; set; }
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {
             // Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType
             var userIdentity = await manager.CreateIdentityAsync(this, DefaultAuthenticationTypes.ApplicationCookie);
             // Add custom user claims here
             return userIdentity;
+        }
+        public ApplicationUser()
+        {
+            Followees = new Collection<Following>();
+            Followers = new Collection<Following>();
         }
     }
 }

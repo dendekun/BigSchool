@@ -3,6 +3,8 @@ using System;
 using System.Linq;
 using System.Web.Mvc;
 using System.Data.Entity;
+using BT1.ViewModel;
+
 namespace BT1.Controllers
 {
     public class HomeController : Controller
@@ -19,7 +21,14 @@ namespace BT1.Controllers
                 .Include(m => m.Category)
                 .Where( m => m.DateTime > DateTime.Now);
 
-            return View(upcommingCourses);
+           
+            var viewModel = new CoursesViewModel
+            {
+                UpcommingCourses = upcommingCourses,
+                ShowAction = User.Identity.IsAuthenticated
+            };
+            return View(viewModel);
         }
+        
     }
 }
