@@ -10,6 +10,7 @@ namespace BT1.ViewModel
     {
         public IEnumerable<Course> UpcommingCourses { get; set; }
         public bool ShowAction { get; set; }
+        
     }
 
 }
